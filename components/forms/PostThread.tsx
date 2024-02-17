@@ -40,13 +40,13 @@ function PostThread({ userId }: { userId: string }) {
   const pathname = usePathname();
   const { organization } = useOrganization();
 
-  const [tags, setTags] = useState<string[]>([]);
+  const [topics, setTopics] = useState<string[]>([]);
 
   const form = useForm({
     resolver: zodResolver(ThreadValidation),
     defaultValues: {
       thread: "",
-      tags: [""],
+      topics: [""],
       accountId: userId,
     },
   });
@@ -54,7 +54,7 @@ function PostThread({ userId }: { userId: string }) {
   const onSubmit = async (values: z.infer<typeof ThreadValidation>) => {
     await createThread({
       text: values.thread,
-      tags: values.tags,
+      topics: values.topics,
       author: userId,
       communityId: organization ? organization.id : null,
       path: pathname,
@@ -63,8 +63,7 @@ function PostThread({ userId }: { userId: string }) {
     router.push("/");
   };
 
-
-    const { setValue } = form;
+  const { setValue } = form;
   return (
     <Form {...form}>
       <form
@@ -88,7 +87,7 @@ function PostThread({ userId }: { userId: string }) {
 
         <FormField
           control={form.control}
-          name="tags"
+          name="topics"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Topics</FormLabel>
@@ -96,11 +95,11 @@ function PostThread({ userId }: { userId: string }) {
                 <TagInput
                   {...field}
                   placeholder="Enter a topic"
-                  tags={tags}
+                  topics={topics}
                   className="sm:min-w-[450px]"
-                  setTags={(newTags) => {
-                    setTags(newTags);
-                    setValue("tags", newTags as [string, ...string[]]);
+                  setTopics={(newTopics) => {
+                    setTopics(newTopics);
+                    setValue("topics", newTopics as [string, ...string[]]);
                   }}
                 />
               </FormControl>

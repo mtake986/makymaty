@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 
 const threadSchema = new mongoose.Schema({
   text: { type: String, required: true },
-  tags: [
+  topics: [
     {
       type: String,
-    }
+    },
   ],
   author: {
     type: mongoose.Schema.Types.ObjectId,

@@ -1,18 +1,18 @@
-import React from 'react';
-import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React from "react";
+import { X } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 interface TagInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   placeholder?: string;
-  tags: string[];
-  setTags: React.Dispatch<React.SetStateAction<string[]>>;
+  topics: string[];
+  setTopics: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
   (props, ref) => {
-    const { placeholder, tags, setTags, className } = props;
+    const { placeholder, topics, setTopics, className } = props;
 
     const [inputValue, setInputValue] = React.useState("");
     const inputRef = React.useRef<HTMLInputElement>(null);
@@ -25,24 +25,24 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       if (e.key === "Enter" || e.key === ",") {
         e.preventDefault();
         const newTag = inputValue.trim();
-        if (newTag && !tags.includes(newTag)) {
-          setTags([...tags, newTag]);
+        if (newTag && !topics.includes(newTag)) {
+          setTopics([...topics, newTag]);
         }
         setInputValue("");
       }
     };
 
     const removeTag = (tagToRemove: string) => {
-      setTags(tags.filter((tag) => tag !== tagToRemove));
+      setTopics(topics.filter((tag) => tag !== tagToRemove));
     };
 
     return (
       <div>
         <div
           className={`flex flex-wrap gap-2 rounded-md ${
-            tags.length !== 0 && "mb-3"
+            topics.length !== 0 && "mb-3"
           }`}>
-          {tags.map((tag, index) => (
+          {topics.map((tag, index) => (
             <span
               key={index}
               className="transition-all border bg-secondary text-secondary-foreground hover:bg-secondary/80 inline-flex h-8 items-center text-sm pl-2 rounded-md">
