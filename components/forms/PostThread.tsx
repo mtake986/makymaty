@@ -89,21 +89,23 @@ function PostThread({ userId }: { userId: string }) {
           control={form.control}
           name="topics"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Topics</FormLabel>
-              <FormControl>
+            <FormItem className="flex flex-col gap-3 w-full">
+              <FormLabel className="text-base-semibold text-light-2">
+                Topics
+              </FormLabel>
+              <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
                 <TagInput
                   {...field}
                   placeholder="Enter a topic"
                   topics={topics}
-                  className="sm:min-w-[450px]"
+                  className="sm:min-w-[450px] bg-dark-3"
                   setTopics={(newTopics) => {
                     setTopics(newTopics);
                     setValue("topics", newTopics as [string, ...string[]]);
                   }}
                 />
               </FormControl>
-              <FormDescription>
+              <FormDescription className="text-stone-700">
                 These are the topics that you&apos;re interested in.
               </FormDescription>
               <FormMessage />

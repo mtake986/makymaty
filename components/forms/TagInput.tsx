@@ -45,14 +45,15 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
           {topics.map((tag, index) => (
             <span
               key={index}
-              className="transition-all border bg-secondary text-secondary-foreground hover:bg-secondary/80 inline-flex h-8 items-center text-sm pl-2 rounded-md">
+              className="transition-all bg-secondary text-light-1 text-secondary-foreground hover:bg-secondary/80 inline-flex h-8 items-center text-sm pl-2 rounded-md">
               {tag}
               <Button
                 type="button"
-                variant="ghost"
                 onClick={() => removeTag(tag)}
-                className={cn("py-1 px-3 h-full hover:bg-transparent")}>
-                <X size={14} />
+                className={cn(
+                  "py-1 px-3 h-full hover:bg-transparent bg-transparent"
+                )}>
+                <X size={14} className="hover:opacity-70" />
               </Button>
             </span>
           ))}
