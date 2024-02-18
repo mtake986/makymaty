@@ -7,6 +7,7 @@ const threadSchema = new mongoose.Schema({
       type: String,
     },
   ],
+  trainingParts: { type: String, required: true, enum: ["Chest", "Back", "Shoulder", "Biceps", "Triceps", "Legs", "Ham", "Glute", "Abs"]},
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

@@ -22,6 +22,14 @@ import { createThread } from "@/lib/actions/thread.actions";
 import { useOrganization } from "@clerk/nextjs";
 import { TagInput } from "./TagInput";
 import { useState } from "react";
+import { Checkbox } from "../ui/checkbox";
+
+const workoutPartsOptions = [
+  { value: "chest", label: "Chest" },
+  { value: "arms", label: "Arms" },
+  { value: "legs", label: "Legs" },
+  // Add more options as needed
+];
 
 type Props = {
   user: {
@@ -41,12 +49,14 @@ function PostThread({ userId }: { userId: string }) {
   const { organization } = useOrganization();
 
   const [topics, setTopics] = useState<string[]>([]);
+  const [trainingParts, setTrainingParts] = useState<string[]>([]);
 
   const form = useForm({
     resolver: zodResolver(ThreadValidation),
     defaultValues: {
       thread: "",
       topics: [""],
+      trainingParts: [""],
       accountId: userId,
     },
   });
@@ -55,6 +65,7 @@ function PostThread({ userId }: { userId: string }) {
     await createThread({
       text: values.thread,
       topics: values.topics,
+      trainingParts: values.trainingParts,
       author: userId,
       communityId: organization ? organization.id : null,
       path: pathname,
@@ -112,6 +123,47 @@ function PostThread({ userId }: { userId: string }) {
             </FormItem>
           )}
         />
+
+        <div className="flex gap-7 items-center">
+          {workoutPartsOptions.map((option, i) => (
+            <FormField
+              key={i}
+              control={form.control}
+              name="trainingParts"
+              render={({ field }) => (
+                <FormItem className="flex items-center space-x-3 space-y-0">
+                  <FormControl className="">
+                    <Checkbox
+                      checked={field.value.includes(option.value)}
+                      onCheckedChange={(checked) => {
+                        // setValue(
+                        //   "trainingParts",
+                        //   newPart as [string, ...string[]]
+                        // );
+                        console.log(checked, field.value, option.value);
+                        if (checked) {
+                          setValue("trainingParts", [
+                            option.value,
+                            ...field.value,
+                          ]);
+                        } else {
+                          setValue(
+                            "trainingParts",
+                            field.value.filter((ele) => ele !== option.value)
+                          );
+                        }
+                      }}
+                      className="border-white"
+                    />
+                  </FormControl>
+                  <FormLabel className="text-light-1 mt-0">
+                    {option.label}
+                  </FormLabel>
+                </FormItem>
+              )}
+            />
+          ))}
+        </div>
 
         <Button type="submit" className="bg-primary-500">
           Post Thread
