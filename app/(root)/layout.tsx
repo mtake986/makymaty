@@ -13,6 +13,7 @@ export const metadata = {
   title: "MakyMaty",
   description: "A Next.js 13 Meta MakyMaty Application",
 };
+import { Toaster } from "@/components/ui/sonner";
 
 export default function RootLayout({
   children,
@@ -32,6 +33,7 @@ export default function RootLayout({
             <RightSidebar />
           </main>
           <Bottombar />
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>

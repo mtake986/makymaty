@@ -58,6 +58,7 @@ interface Params {
   path: string;
 }
 
+// todo: save trainingParts, anotherTrainingParts,
 export async function createThread({
   text,
   topics,
