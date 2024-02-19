@@ -42,3 +42,15 @@ export const communityTabs = [
   { value: "members", label: "Members", icon: "/assets/members.svg" },
   { value: "requests", label: "Requests", icon: "/assets/request.svg" },
 ];
+
+export const workoutPartsOptions = [
+  { value: "chest", label: "Chest" },
+  { value: "back", label: "Back" },
+  { value: "shoulders", label: "Shoulders" },
+  { value: "arms", label: "Arms" },
+  { value: "biceps", label: "Biceps" },
+  { value: "triceps", label: "Triceps" },
+  { value: "legs", label: "Legs" },
+  { value: "glute", label: "Glute" },
+  { value: "abs", label: "Abs" },
+];

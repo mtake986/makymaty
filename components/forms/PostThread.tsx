@@ -24,12 +24,18 @@ import { TagInput } from "./TagInput";
 import { useState } from "react";
 import { Checkbox } from "../ui/checkbox";
 
-const workoutPartsOptions = [
-  { value: "chest", label: "Chest" },
-  { value: "arms", label: "Arms" },
-  { value: "legs", label: "Legs" },
-  // Add more options as needed
-];
+import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { capitalizeFirstLetter } from "@/lib/utils/capitalizeFirstLetter";
+import { workoutPartsOptions } from "@/constants";
+import { MinusCircleIcon } from "lucide-react";
 
 type Props = {
   user: {
@@ -43,20 +49,23 @@ type Props = {
   btnTitle: string;
 };
 
+type Checked = DropdownMenuCheckboxItemProps["checked"];
+
 function PostThread({ userId }: { userId: string }) {
   const router = useRouter();
   const pathname = usePathname();
   const { organization } = useOrganization();
 
   const [topics, setTopics] = useState<string[]>([]);
-  const [trainingParts, setTrainingParts] = useState<string[]>([]);
+  const [needAnotherOption, setNeedAnotherOption] = useState<boolean>(false);
 
   const form = useForm({
     resolver: zodResolver(ThreadValidation),
     defaultValues: {
       thread: "",
       topics: [""],
-      trainingParts: [""],
+      trainingParts: ["Any"],
+      anotherTrainingParts: ["Any"],
       accountId: userId,
     },
   });
@@ -66,6 +75,7 @@ function PostThread({ userId }: { userId: string }) {
       text: values.thread,
       topics: values.topics,
       trainingParts: values.trainingParts,
+      anotherTrainingParts: values.anotherTrainingParts,
       author: userId,
       communityId: organization ? organization.id : null,
       path: pathname,
@@ -107,7 +117,6 @@ function PostThread({ userId }: { userId: string }) {
               <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
                 <TagInput
                   {...field}
-                  placeholder="Enter a topic"
                   topics={topics}
                   className="sm:min-w-[450px] bg-dark-3"
                   setTopics={(newTopics) => {
@@ -117,29 +126,28 @@ function PostThread({ userId }: { userId: string }) {
                 />
               </FormControl>
               <FormDescription className="text-stone-700">
-                These are the topics that you&apos;re interested in.
+                Press Enter or type a comma to add a topic.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className="flex gap-7 items-center">
-          {workoutPartsOptions.map((option, i) => (
-            <FormField
-              key={i}
-              control={form.control}
-              name="trainingParts"
-              render={({ field }) => (
-                <FormItem className="flex items-center space-x-3 space-y-0">
-                  <FormControl className="">
-                    <Checkbox
+        <div className="flex-col flex gap-3 items-start">
+          {/* {workoutPartsOptions.map((option, i) => ( */}
+          <FormField
+            // key={i}
+            control={form.control}
+            name="trainingParts"
+            render={({ field }) => (
+              <FormItem className="flex items-center space-x-3 space-y-0">
+                <FormLabel className="text-base-semibold text-light-2">
+                  Training Parts
+                </FormLabel>
+                <FormControl>
+                  {/* <Checkbox
                       checked={field.value.includes(option.value)}
                       onCheckedChange={(checked) => {
-                        // setValue(
-                        //   "trainingParts",
-                        //   newPart as [string, ...string[]]
-                        // );
                         console.log(checked, field.value, option.value);
                         if (checked) {
                           setValue("trainingParts", [
@@ -154,15 +162,136 @@ function PostThread({ userId }: { userId: string }) {
                         }
                       }}
                       className="border-white"
-                    />
-                  </FormControl>
-                  <FormLabel className="text-light-1 mt-0">
-                    {option.label}
+                    /> */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="no-focus border border-dark-4 bg-dark-3 text-light-1 hover:bg-dark-3 hover:text-light-1">
+                        {field.value
+                          .map((part: string) => capitalizeFirstLetter(part))
+                          .sort()
+                          .join(" & ")}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-40 border border-dark-4 bg-dark-3 text-light-1">
+                      {workoutPartsOptions.map((option, i) => (
+                        <DropdownMenuCheckboxItem
+                          className="focus:bg-dark-4 focus:text-light-1"
+                          key={i}
+                          checked={field.value.includes(option.value)}
+                          onCheckedChange={(checked) => {
+                            console.log(checked, field.value, option.value);
+                            if (checked) {
+                              if (field.value[0] === "Any") {
+                                setValue("trainingParts", [option.value]);
+                              } else {
+                                setValue("trainingParts", [
+                                  option.value,
+                                  ...field.value,
+                                ]);
+                              }
+                            } else {
+                              if (field.value.length === 1) {
+                                setValue("trainingParts", ["Any"]);
+                              } else {
+                                setValue(
+                                  "trainingParts",
+                                  field.value.filter(
+                                    (ele) => ele !== option.value
+                                  )
+                                );
+                              }
+                            }
+                          }}>
+                          {option.label}
+                        </DropdownMenuCheckboxItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </FormControl>
+                {!needAnotherOption && (
+                  <FormDescription
+                    onClick={() => setNeedAnotherOption(true)}
+                    className="cursor-pointer hover:underline">
+                    Another Option?
+                  </FormDescription>
+                )}
+              </FormItem>
+            )}
+          />
+          {needAnotherOption && (
+            <FormField
+              // key={i}
+              control={form.control}
+              name="anotherTrainingParts"
+              render={({ field }) => (
+                <FormItem className="flex items-center space-x-3 space-y-0">
+                  <FormLabel className="text-base-semibold text-light-2">
+                    Another Option
                   </FormLabel>
+                  <FormControl>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="no-focus border border-dark-4 bg-dark-3 text-light-1 hover:bg-dark-3 hover:text-light-1">
+                          {field.value
+                            .map((part: string) => capitalizeFirstLetter(part))
+                            .sort()
+                            .join(" & ")}
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-40 border border-dark-4 bg-dark-3 text-light-1">
+                        {workoutPartsOptions.map((option, i) => (
+                          <DropdownMenuCheckboxItem
+                            className="focus:bg-dark-4 focus:text-light-1"
+                            key={i}
+                            checked={field.value.includes(option.value)}
+                            onCheckedChange={(checked) => {
+                              console.log(checked, field.value, option.value);
+                              if (checked) {
+                                if (field.value[0] === "Any") {
+                                  setValue("anotherTrainingParts", [
+                                    option.value,
+                                  ]);
+                                } else {
+                                  setValue("anotherTrainingParts", [
+                                    option.value,
+                                    ...field.value,
+                                  ]);
+                                }
+                              } else {
+                                if (field.value.length === 1) {
+                                  setValue("anotherTrainingParts", ["Any"]);
+                                } else {
+                                  setValue(
+                                    "anotherTrainingParts",
+                                    field.value.filter(
+                                      (ele) => ele !== option.value
+                                    )
+                                  );
+                                }
+                              }
+                            }}>
+                            {option.label}
+                          </DropdownMenuCheckboxItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </FormControl>
+                  <FormDescription className="cursor-pointer ">
+                    <MinusCircleIcon
+                      onClick={() => setNeedAnotherOption((prev) => !prev)}
+                      size={16}
+                      className="text-red-500"
+                    />
+                  </FormDescription>
                 </FormItem>
               )}
             />
-          ))}
+          )}
+          {/* ))} */}
         </div>
 
         <Button type="submit" className="bg-primary-500">

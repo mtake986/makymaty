@@ -52,6 +52,7 @@ interface Params {
   text: string;
   topics: string[];
   trainingParts: string[];
+  anotherTrainingParts: string[];
   author: string;
   communityId: string | null;
   path: string;
@@ -61,6 +62,7 @@ export async function createThread({
   text,
   topics,
   trainingParts,
+  anotherTrainingParts,
   author,
   communityId,
   path,
