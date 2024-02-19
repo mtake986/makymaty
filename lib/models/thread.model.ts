@@ -1,13 +1,48 @@
 import mongoose from "mongoose";
 
 const threadSchema = new mongoose.Schema({
-  text: { type: String, required: true },
+  description: { type: String, required: true },
   topics: [
     {
       type: String,
     },
   ],
-  trainingParts: { type: String, required: true, enum: ["Chest", "Back", "Shoulder", "Biceps", "Triceps", "Legs", "Ham", "Glute", "Abs"]},
+  trainingParts: [
+    {
+      type: String,
+      required: true,
+      enum: [
+        "Any",
+        "Chest",
+        "Back",
+        "Shoulder",
+        "Biceps",
+        "Triceps",
+        "Legs",
+        "Ham",
+        "Glute",
+        "Abs",
+      ],
+    },
+  ],
+  anotherTrainingParts: [
+    {
+      type: String,
+      required: true,
+      enum: [
+        "Any",
+        "Chest",
+        "Back",
+        "Shoulder",
+        "Biceps",
+        "Triceps",
+        "Legs",
+        "Ham",
+        "Glute",
+        "Abs",
+      ],
+    },
+  ],
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

@@ -63,7 +63,7 @@ function PostThread({ userId }: { userId: string }) {
   const form = useForm({
     resolver: zodResolver(ThreadValidation),
     defaultValues: {
-      thread: "",
+      text: "",
       topics: [""],
       trainingParts: ["Any"],
       anotherTrainingParts: ["chest"],
@@ -72,15 +72,16 @@ function PostThread({ userId }: { userId: string }) {
   });
 
   const onSubmit = async (values: z.infer<typeof ThreadValidation>) => {
-    await createThread({
-      text: values.thread,
-      topics: values.topics,
+    const payload = {
+      text: values.text,
+      topics: values.topics.filter((topic) => topic !== ""),
       trainingParts: values.trainingParts,
-      anotherTrainingParts: values.anotherTrainingParts,
+      anotherTrainingParts: values.trainingParts[0] === "Any" ? [] : values.anotherTrainingParts,
       author: userId,
       communityId: organization ? organization.id : null,
       path: pathname,
-    });
+    }
+    await createThread(payload);
 
     router.push("/");
   };
@@ -93,7 +94,7 @@ function PostThread({ userId }: { userId: string }) {
         className="mt-10 flex flex-col justify-start gap-10">
         <FormField
           control={form.control}
-          name="thread"
+          name="text"
           render={({ field }) => (
             <FormItem className="flex flex-col gap-3 w-full">
               <FormLabel className="text-base-semibold text-light-2">

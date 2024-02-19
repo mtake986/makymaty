@@ -51,6 +51,8 @@ export const workoutPartsOptions = [
   { value: "biceps", label: "Biceps" },
   { value: "triceps", label: "Triceps" },
   { value: "legs", label: "Legs" },
+  { value: "quads", label: "Quads" },
   { value: "glute", label: "Glute" },
+  { value: "ham", label: "Ham" },
   { value: "abs", label: "Abs" },
 ];

@@ -7,7 +7,7 @@ type Props = {
   id: string;
   currentUserId: string;
   parentId: string | null;
-  content: string;
+  description: string;
   author: {
     name: string;
     image: string;
@@ -32,7 +32,7 @@ const ThreadCard = ({
   id,
   currentUserId,
   parentId,
-  content,
+  description,
   author,
   community,
   createdAt,
@@ -66,7 +66,7 @@ const ThreadCard = ({
               </h4>
             </Link>
 
-            <p className="mt-2 text-small-regular text-light-2">{content}</p>
+            <p className="mt-2 text-small-regular text-light-2">{description}</p>
             <div className="flex gap-1 items-center mt-3">
               {topics?.map((topic: string, i: number) => (
                 <Link key={i} href={"/create-thread"}>

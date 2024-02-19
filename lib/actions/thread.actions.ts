@@ -50,9 +50,9 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
 
 interface Params {
   text: string;
-  topics: string[];
+  topics?: string[];
   trainingParts: string[];
-  anotherTrainingParts: string[];
+  anotherTrainingParts?: string[];
   author: string;
   communityId: string | null;
   path: string;
@@ -79,6 +79,8 @@ export async function createThread({
     const createdThread = await Thread.create({
       text,
       topics,
+      trainingParts,
+      anotherTrainingParts,
       author,
       community: communityIdObject, // Assign communityId if provided, or leave it null for personal account
     });
