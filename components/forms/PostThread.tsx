@@ -23,6 +23,7 @@ import { useOrganization } from "@clerk/nextjs";
 import { TagInput } from "./TagInput";
 import { useState } from "react";
 import { Checkbox } from "../ui/checkbox";
+import { IoIosUndo } from "react-icons/io";
 
 import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
 import {
@@ -34,8 +35,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { capitalizeFirstLetter } from "@/lib/utils/capitalizeFirstLetter";
-import { workoutPartsOptions } from "@/constants";
-import { MinusCircleIcon } from "lucide-react";
+import {
+  TRAINING_PARTS,
+  DEFAULT_VALUE_ANOTHER_TRAINING_PARTS,
+} from "@/constants";
+import { MinusCircleIcon, Undo } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "../ui/input";
 import { Badge } from "../ui/badge";
@@ -68,7 +72,7 @@ function PostThread({ userId }: { userId: string }) {
       text: "",
       topics: [""],
       trainingParts: ["Any"],
-      anotherTrainingParts: ["chest"],
+      anotherTrainingParts: DEFAULT_VALUE_ANOTHER_TRAINING_PARTS,
       gymInfo: {
         name: "BYU - Idaho Fitness Center",
         city: "Rexburg",
@@ -129,7 +133,7 @@ function PostThread({ userId }: { userId: string }) {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-40 border border-dark-4 bg-dark-3 text-light-1">
-                          {workoutPartsOptions.map((option, i) => (
+                          {TRAINING_PARTS.map((option, i) => (
                             <DropdownMenuCheckboxItem
                               className="focus:bg-dark-4 focus:text-light-1"
                               key={i}
@@ -162,6 +166,16 @@ function PostThread({ userId }: { userId: string }) {
                               {option.label}
                             </DropdownMenuCheckboxItem>
                           ))}
+                          <DropdownMenuSeparator />
+                          <DropdownMenuLabel
+                            onClick={() => {
+                              setNeedAnotherOption(false);
+                              setValue("trainingParts", ["Any"]);
+                            }}
+                            className="text-center rounded-md flex items-center gap-3 cursor-pointer hover:opacity-70 text-red-500">
+                            <IoIosUndo size={16} className="text-red-500" />
+                            <span>Reset</span>
+                          </DropdownMenuLabel>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </FormControl>
@@ -174,6 +188,7 @@ function PostThread({ userId }: { userId: string }) {
                         {capitalizeFirstLetter(option)}
                       </span>
                     ))}
+                    {/* <IoIosUndo size={14} className="text-gray-500" /> */}
                   </FormDescription>
                   <FormDescription className="!mt-1 sm:!mt-0">
                     {field.value.includes("Any") ? null : !needAnotherOption ? (
@@ -210,7 +225,7 @@ function PostThread({ userId }: { userId: string }) {
                           </DropdownMenuTrigger>
 
                           <DropdownMenuContent className="w-40 border border-dark-4 bg-dark-3 text-light-1">
-                            {workoutPartsOptions.map((option, i) => (
+                            {TRAINING_PARTS.map((option, i) => (
                               <DropdownMenuCheckboxItem
                                 className="focus:bg-dark-4 focus:text-light-1"
                                 key={i}
@@ -245,6 +260,15 @@ function PostThread({ userId }: { userId: string }) {
                                 {option.label}
                               </DropdownMenuCheckboxItem>
                             ))}
+                            <DropdownMenuSeparator />
+                            <DropdownMenuLabel
+                              onClick={() => {
+                                setValue("anotherTrainingParts", ["chest"]);
+                              }}
+                              className="text-center rounded-md flex items-center gap-3 cursor-pointer hover:opacity-70 text-red-500">
+                              <IoIosUndo size={16} className="text-red-500" />
+                              <span>Reset</span>
+                            </DropdownMenuLabel>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </FormControl>

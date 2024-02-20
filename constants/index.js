@@ -43,7 +43,7 @@ export const communityTabs = [
   { value: "requests", label: "Requests", icon: "/assets/request.svg" },
 ];
 
-export const workoutPartsOptions = [
+export const TRAINING_PARTS = [
   { value: "abs", label: "Abs" },
   { value: "arms", label: "Arms" },
   { value: "biceps", label: "Biceps" },
@@ -56,3 +56,5 @@ export const workoutPartsOptions = [
   { value: "shoulders", label: "Shoulders" },
   { value: "triceps", label: "Triceps" },
 ];
+
+export const DEFAULT_VALUE_ANOTHER_TRAINING_PARTS = ["chest"]
