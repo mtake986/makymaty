@@ -50,8 +50,16 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
 
 interface Params {
   text: string;
-  topics?: string[];
   trainingParts: string[];
+  gymInfo: {
+    name: string;
+    city: string;
+    state: string;
+    country: string;
+    address?: string;
+    zipCode?: string;
+  };
+  topics?: string[];
   anotherTrainingParts?: string[];
   author: string;
   communityId: string | null;
@@ -61,8 +69,9 @@ interface Params {
 // todo: save trainingParts, anotherTrainingParts,
 export async function createThread({
   text,
-  topics,
   trainingParts,
+  gymInfo,
+  topics,
   anotherTrainingParts,
   author,
   communityId,
@@ -78,8 +87,9 @@ export async function createThread({
 
     const createdThread = await Thread.create({
       text,
-      topics,
       trainingParts,
+      gymInfo,
+      topics,
       anotherTrainingParts,
       author,
       community: communityIdObject, // Assign communityId if provided, or leave it null for personal account

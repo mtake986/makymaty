@@ -25,6 +25,8 @@ type Props = {
     };
   }[];
   topics?: string[];
+  trainingParts: string[];
+  anotherTrainingParts?: string[];
   isComment?: boolean;
 };
 
@@ -38,6 +40,8 @@ const ThreadCard = ({
   createdAt,
   comments,
   topics,
+  trainingParts,
+  anotherTrainingParts,
   isComment,
 }: Props) => {
   return (
@@ -66,7 +70,17 @@ const ThreadCard = ({
               </h4>
             </Link>
 
-            <p className="mt-2 text-small-regular text-light-2">{description}</p>
+            {/* TODO: make UI */}
+            <div className="flex gap-1 items-center mt-3">
+              {trainingParts?.map((topic: string, i: number) => (
+                <Link key={i} href={"/create-thread"}>
+                  <span className="text-light-1 text-xl border">{topic}</span>
+                </Link>
+              ))}
+            </div>
+            <p className="mt-2 text-small-regular text-light-2">
+              {description}
+            </p>
             <div className="flex gap-1 items-center mt-3">
               {topics?.map((topic: string, i: number) => (
                 <Link key={i} href={"/create-thread"}>
