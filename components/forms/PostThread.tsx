@@ -109,10 +109,10 @@ function PostThread({ userId }: { userId: string }) {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="mt-10 flex flex-col justify-start gap-10">
+        {/* Workout Info. */}
         <div className="flex flex-col gap-5">
           <p className="text-heading4-medium text-light-4">Workout Info.</p>
           <div className="flex flex-col items-start gap-3">
-            {/* {workoutPartsOptions.map((option, i) => ( */}
             <FormField
               // key={i}
               control={form.control}
@@ -120,7 +120,7 @@ function PostThread({ userId }: { userId: string }) {
               render={({ field }) => (
                 <FormItem className="flex flex-col items-start sm:gap-3 sm:flex-row sm:items-center">
                   <div className="flex items-center space-x-3 space-y-0">
-                    <FormLabel className="text-base-semibold text-light-2">
+                    <FormLabel className="text-base-semibold text-gray-500">
                       Training Parts
                     </FormLabel>
                     <FormControl>
@@ -182,13 +182,12 @@ function PostThread({ userId }: { userId: string }) {
                   </div>
                   <FormDescription className="!mt-1 sm:!mt-0">
                     {field.value.map((option) => (
-                      <span
-                        className="text-base-regular mr-2 text-light-3"
+                      <Badge
+                        className="text-base-regular mr-2 text-light-1"
                         key={option}>
                         {capitalizeFirstLetter(option)}
-                      </span>
+                      </Badge>
                     ))}
-                    {/* <IoIosUndo size={14} className="text-gray-500" /> */}
                   </FormDescription>
                   <FormDescription className="!mt-1 sm:!mt-0">
                     {field.value.includes("Any") ? null : !needAnotherOption ? (
@@ -202,7 +201,6 @@ function PostThread({ userId }: { userId: string }) {
                 </FormItem>
               )}
             />
-            {/* ))} */}
             {needAnotherOption && (
               <FormField
                 // key={i}
@@ -211,7 +209,7 @@ function PostThread({ userId }: { userId: string }) {
                 render={({ field }) => (
                   <FormItem className="flex flex-col items-start sm:gap-3 sm:flex-row sm:items-center">
                     <div className="flex items-center space-x-3 space-y-0">
-                      <FormLabel className="text-base-semibold text-light-2">
+                      <FormLabel className="text-base-semibold text-gray-500">
                         Another Training Parts
                       </FormLabel>
                       <FormControl>
@@ -276,7 +274,7 @@ function PostThread({ userId }: { userId: string }) {
                     <FormDescription className="!mt-0">
                       {field.value.map((option) => (
                         <span
-                          className="text-base-regular mr-2 text-light-3"
+                          className="text-base-regular mr-2 text-light-1"
                           key={option}>
                           {capitalizeFirstLetter(option)}
                         </span>
@@ -293,7 +291,7 @@ function PostThread({ userId }: { userId: string }) {
             name="text"
             render={({ field }) => (
               <FormItem className="flex flex-col gap-3 w-full">
-                <FormLabel className="text-base-semibold text-light-2">
+                <FormLabel className="text-base-semibold text-gray-500">
                   Description
                 </FormLabel>
                 <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
@@ -305,14 +303,18 @@ function PostThread({ userId }: { userId: string }) {
           />
         </div>
 
+        {/* Gym Info. */}
         <div className="flex flex-col gap-3 ">
-          <p className="text-heading4-medium text-light-4">Gym Info.</p>
+          <p className="text-heading4-medium text-light-1">Gym Info.</p>
+          <p className="text-light-1">
+            Fill out below about the gym you are going to work out at.
+          </p>
           <FormField
             control={form.control}
             name="gymInfo.name"
             render={({ field }) => (
               <FormItem className="flex items-center gap-3 w-full">
-                <FormLabel className="text-base-semibold min-w-20 text-light-2">
+                <FormLabel className="text-base-semibold min-w-20 text-gray-500">
                   Name
                 </FormLabel>
                 <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
@@ -327,7 +329,7 @@ function PostThread({ userId }: { userId: string }) {
             name="gymInfo.city"
             render={({ field }) => (
               <FormItem className="flex items-center gap-3 w-full">
-                <FormLabel className="text-base-semibold min-w-20 text-light-2">
+                <FormLabel className="text-base-semibold min-w-20 text-gray-500">
                   City
                 </FormLabel>
                 <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
@@ -342,7 +344,7 @@ function PostThread({ userId }: { userId: string }) {
             name="gymInfo.state"
             render={({ field }) => (
               <FormItem className="flex items-center gap-3 w-full">
-                <FormLabel className="text-base-semibold min-w-20 text-light-2">
+                <FormLabel className="text-base-semibold min-w-20 text-gray-500">
                   State
                 </FormLabel>
                 <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
@@ -357,7 +359,7 @@ function PostThread({ userId }: { userId: string }) {
             name="gymInfo.country"
             render={({ field }) => (
               <FormItem className="flex items-center gap-3 w-full">
-                <FormLabel className="text-base-semibold min-w-20 text-light-2">
+                <FormLabel className="text-base-semibold min-w-20 text-gray-500">
                   Country
                 </FormLabel>
                 <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
@@ -372,7 +374,7 @@ function PostThread({ userId }: { userId: string }) {
             name="gymInfo.address"
             render={({ field }) => (
               <FormItem className="flex items-center gap-3 w-full">
-                <FormLabel className="text-base-semibold min-w-20 text-light-2">
+                <FormLabel className="text-base-semibold min-w-20 text-gray-500">
                   Address
                 </FormLabel>
                 <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
@@ -387,7 +389,7 @@ function PostThread({ userId }: { userId: string }) {
             name="gymInfo.zipCode"
             render={({ field }) => (
               <FormItem className="flex items-center gap-3 w-full">
-                <FormLabel className="text-base-semibold min-w-20 text-light-2">
+                <FormLabel className="text-base-semibold min-w-20 text-gray-500">
                   Zip Code
                 </FormLabel>
                 <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
@@ -425,6 +427,7 @@ function PostThread({ userId }: { userId: string }) {
             </FormItem>
           )}
         />
+
         <Button type="submit" className="bg-primary-500">
           Post Thread
         </Button>

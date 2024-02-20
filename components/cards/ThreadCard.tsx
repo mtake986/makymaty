@@ -74,7 +74,7 @@ const ThreadCard = ({
             <div className="flex gap-1 items-center mt-3">
               {trainingParts?.map((topic: string, i: number) => (
                 <Link key={i} href={"/create-thread"}>
-                  <span className="text-light-1 text-xl border">{topic}</span>
+                  <span className="text-light-1 text-xl">{topic}</span>
                 </Link>
               ))}
             </div>
