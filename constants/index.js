@@ -44,15 +44,15 @@ export const communityTabs = [
 ];
 
 export const workoutPartsOptions = [
-  { value: "chest", label: "Chest" },
-  { value: "back", label: "Back" },
-  { value: "shoulders", label: "Shoulders" },
+  { value: "abs", label: "Abs" },
   { value: "arms", label: "Arms" },
   { value: "biceps", label: "Biceps" },
-  { value: "triceps", label: "Triceps" },
-  { value: "legs", label: "Legs" },
-  { value: "quads", label: "Quads" },
+  { value: "back", label: "Back" },
+  { value: "chest", label: "Chest" },
   { value: "glute", label: "Glute" },
   { value: "ham", label: "Ham" },
-  { value: "abs", label: "Abs" },
+  { value: "legs", label: "Legs" },
+  { value: "quads", label: "Quads" },
+  { value: "shoulders", label: "Shoulders" },
+  { value: "triceps", label: "Triceps" },
 ];
