@@ -23,7 +23,7 @@ import { useOrganization } from "@clerk/nextjs";
 import { TagInput } from "./TagInput";
 import { useState } from "react";
 import { Checkbox } from "../ui/checkbox";
-import { IoIosUndo } from "react-icons/io";
+import { IoIosSwitch, IoIosUndo } from "react-icons/io";
 
 import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
 import {
@@ -39,10 +39,15 @@ import {
   TRAINING_PARTS,
   DEFAULT_VALUE_ANOTHER_TRAINING_PARTS,
 } from "@/constants";
-import { MinusCircleIcon, Undo } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "../ui/input";
-import { Badge } from "../ui/badge";
+import { InfoIcon, MinusCircleIcon } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { FaArrowRightArrowLeft, FaClosedCaptioning } from "react-icons/fa6";
 
 type Props = {
   user: {
@@ -65,6 +70,7 @@ function PostThread({ userId }: { userId: string }) {
 
   const [topics, setTopics] = useState<string[]>([]);
   const [needAnotherOption, setNeedAnotherOption] = useState<boolean>(false);
+  const [isVisitorFormShown, setVisitorFormShown] = useState<boolean>(false);
 
   const form = useForm({
     resolver: zodResolver(ThreadValidation),
@@ -81,6 +87,8 @@ function PostThread({ userId }: { userId: string }) {
         address: "",
         zipCode: "83460",
       },
+      goodWithVisiting: false,
+      visitingInfo: [],
       accountId: userId,
     },
   });
@@ -94,6 +102,8 @@ function PostThread({ userId }: { userId: string }) {
         ? values.anotherTrainingParts
         : [],
       gymInfo: values.gymInfo,
+      goodWithVisiting: values.goodWithVisiting,
+      visitingInfo: values.visitingInfo,
       author: userId,
       communityId: organization ? organization.id : null,
       path: pathname,
@@ -103,6 +113,7 @@ function PostThread({ userId }: { userId: string }) {
     router.push("/");
   };
 
+  // functions when choosing arms and legs
   const { setValue } = form;
   return (
     <Form {...form}>
@@ -111,16 +122,16 @@ function PostThread({ userId }: { userId: string }) {
         className="mt-10 flex flex-col justify-start gap-10">
         {/* Workout Info. */}
         <div className="flex flex-col gap-5">
-          <p className="text-heading4-medium text-light-4">Workout Info.</p>
-          <div className="flex flex-col items-start gap-3">
+          <p className="text-primary-500 text-heading3-bold">Workout Info.</p>
+          <div className="flex flex-col items-start gap-1 sm:gap-3">
             <FormField
               // key={i}
               control={form.control}
               name="trainingParts"
               render={({ field }) => (
-                <FormItem className="flex flex-col items-start sm:gap-3 sm:flex-row sm:items-center">
+                <FormItem className="flex flex-col gap-2 items-start sm:gap-3 sm:flex-row sm:items-center">
                   <div className="flex items-center space-x-3 space-y-0">
-                    <FormLabel className="text-base-semibold text-gray-500">
+                    <FormLabel className="text-base-semibold text-slate-500">
                       Training Parts
                     </FormLabel>
                     <FormControl>
@@ -133,6 +144,7 @@ function PostThread({ userId }: { userId: string }) {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-40 border border-dark-4 bg-dark-3 text-light-1">
+                          {/* add some logic when adding/removing arms, quads */}
                           {TRAINING_PARTS.map((option, i) => (
                             <DropdownMenuCheckboxItem
                               className="focus:bg-dark-4 focus:text-light-1"
@@ -180,13 +192,13 @@ function PostThread({ userId }: { userId: string }) {
                       </DropdownMenu>
                     </FormControl>
                   </div>
-                  <FormDescription className="!mt-1 sm:!mt-0">
+                  <FormDescription className="!mt-1 sm:!mt-0 flex flex-wrap items-center gap-2">
                     {field.value.map((option) => (
-                      <Badge
-                        className="text-base-regular mr-2 text-light-1"
+                      <span
+                        className="text-base-regular py-0.5 px-3 text-light-1 bg-slate-500"
                         key={option}>
                         {capitalizeFirstLetter(option)}
-                      </Badge>
+                      </span>
                     ))}
                   </FormDescription>
                   <FormDescription className="!mt-1 sm:!mt-0">
@@ -207,10 +219,17 @@ function PostThread({ userId }: { userId: string }) {
                 control={form.control}
                 name="anotherTrainingParts"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col items-start sm:gap-3 sm:flex-row sm:items-center">
+                  <FormItem className="flex flex-col gap-2 items-start sm:gap-3 sm:flex-row sm:items-center">
                     <div className="flex items-center space-x-3 space-y-0">
-                      <FormLabel className="text-base-semibold text-gray-500">
-                        Another Training Parts
+                      <FormLabel className="flex items-center gap-3 text-base-semibold text-slate-500">
+                        <MinusCircleIcon
+                          onClick={() => {
+                            setNeedAnotherOption(false);
+                          }}
+                          size={16}
+                          className="text-red-500 hover:cursor-pointer hover:opacity-70 transition-all"
+                        />
+                        Or
                       </FormLabel>
                       <FormControl>
                         <DropdownMenu>
@@ -271,10 +290,10 @@ function PostThread({ userId }: { userId: string }) {
                         </DropdownMenu>
                       </FormControl>
                     </div>
-                    <FormDescription className="!mt-0">
+                    <FormDescription className="!mt-1 sm:!mt-0 flex flex-wrap items-center gap-2">
                       {field.value.map((option) => (
                         <span
-                          className="text-base-regular mr-2 text-light-1"
+                          className="text-base-regular py-0.5 px-3 text-light-1 bg-slate-500"
                           key={option}>
                           {capitalizeFirstLetter(option)}
                         </span>
@@ -291,11 +310,16 @@ function PostThread({ userId }: { userId: string }) {
             name="text"
             render={({ field }) => (
               <FormItem className="flex flex-col gap-3 w-full">
-                <FormLabel className="text-base-semibold text-gray-500">
+                <FormLabel className="text-base-semibold text-slate-500">
                   Description
                 </FormLabel>
                 <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
-                  <Textarea rows={3} {...field} />
+                  <Textarea
+                    rows={3}
+                    {...field}
+                    className="placeholder:text-slate-500"
+                    placeholder="Add any commens to describe yourself like your PR."
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -305,100 +329,137 @@ function PostThread({ userId }: { userId: string }) {
 
         {/* Gym Info. */}
         <div className="flex flex-col gap-3 ">
-          <p className="text-heading4-medium text-light-1">Gym Info.</p>
-          <p className="text-light-1">
-            Fill out below about the gym you are going to work out at.
-          </p>
-          <FormField
-            control={form.control}
-            name="gymInfo.name"
-            render={({ field }) => (
-              <FormItem className="flex items-center gap-3 w-full">
-                <FormLabel className="text-base-semibold min-w-20 text-gray-500">
-                  Name
-                </FormLabel>
-                <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="gymInfo.city"
-            render={({ field }) => (
-              <FormItem className="flex items-center gap-3 w-full">
-                <FormLabel className="text-base-semibold min-w-20 text-gray-500">
-                  City
-                </FormLabel>
-                <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="gymInfo.state"
-            render={({ field }) => (
-              <FormItem className="flex items-center gap-3 w-full">
-                <FormLabel className="text-base-semibold min-w-20 text-gray-500">
-                  State
-                </FormLabel>
-                <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="gymInfo.country"
-            render={({ field }) => (
-              <FormItem className="flex items-center gap-3 w-full">
-                <FormLabel className="text-base-semibold min-w-20 text-gray-500">
-                  Country
-                </FormLabel>
-                <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="gymInfo.address"
-            render={({ field }) => (
-              <FormItem className="flex items-center gap-3 w-full">
-                <FormLabel className="text-base-semibold min-w-20 text-gray-500">
-                  Address
-                </FormLabel>
-                <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="gymInfo.zipCode"
-            render={({ field }) => (
-              <FormItem className="flex items-center gap-3 w-full">
-                <FormLabel className="text-base-semibold min-w-20 text-gray-500">
-                  Zip Code
-                </FormLabel>
-                <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div>
+            <div className="flex gap-3 items-center">
+              <h3 className="text-heading3-bold text-primary-500">
+                Gym Info.{" "}
+              </h3>
+              <Popover>
+                <PopoverTrigger>
+                  <InfoIcon size={20} className="text-primary-500" />
+                </PopoverTrigger>
+                <PopoverContent className="bg-dark-3 border-dark-4 text-white">
+                  At which gym you gonna work out? If other trainees are
+                  interested, they&apos;d come to work out with ya!!
+                </PopoverContent>
+              </Popover>
+            </div>
+            {/* {isVisitorFormShown ? (
+              <span
+                onClick={() => setVisitorFormShown(false)}
+                className="text-primary-500 flex items-center gap-3 cursor-pointer hover:opacity-70 transition-all">
+                Don&apos;t mind to be a visitor?{" "}
+                <span>
+                  <FaArrowRightArrowLeft />
+                </span>
+              </span>
+            ) : (
+              <span
+                onClick={() => setVisitorFormShown(true)}
+                className="text-primary-500 flex items-center gap-3 cursor-pointer hover:opacity-70 transition-all">
+                Want others to come to your gym?
+                <span>
+                  <FaArrowRightArrowLeft />
+                </span>
+              </span>
+            )} */}
+          </div>
+          {isVisitorFormShown ? (
+            <>form</>
+          ) : (
+            <>
+              <FormField
+                control={form.control}
+                name="gymInfo.name"
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-3 w-full">
+                    <FormLabel className="text-base-semibold min-w-20 text-slate-500">
+                      Name
+                    </FormLabel>
+                    <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="gymInfo.city"
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-3 w-full">
+                    <FormLabel className="text-base-semibold min-w-20 text-slate-500">
+                      City
+                    </FormLabel>
+                    <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="gymInfo.state"
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-3 w-full">
+                    <FormLabel className="text-base-semibold min-w-20 text-slate-500">
+                      State
+                    </FormLabel>
+                    <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="gymInfo.country"
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-3 w-full">
+                    <FormLabel className="text-base-semibold min-w-20 text-slate-500">
+                      Country
+                    </FormLabel>
+                    <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="gymInfo.address"
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-3 w-full">
+                    <FormLabel className="text-base-semibold min-w-20 text-slate-500">
+                      Address
+                    </FormLabel>
+                    <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="gymInfo.zipCode"
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-3 w-full">
+                    <FormLabel className="text-base-semibold min-w-20 text-slate-500">
+                      Zip Code
+                    </FormLabel>
+                    <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </>
+          )}
         </div>
 
         <FormField
@@ -406,7 +467,7 @@ function PostThread({ userId }: { userId: string }) {
           name="topics"
           render={({ field }) => (
             <FormItem className="flex flex-col gap-3 w-full">
-              <FormLabel className="text-base-semibold text-light-2">
+              <FormLabel className="text-base-semibold text-slate-500">
                 Topics
               </FormLabel>
               <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">

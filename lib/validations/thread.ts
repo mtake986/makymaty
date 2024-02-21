@@ -13,6 +13,17 @@ export const ThreadValidation = z.object({
   }),
   topics: z.string().array().max(5).optional(),
   anotherTrainingParts: z.string().array().max(5).min(1).optional(),
+  goodWithVisiting: z.boolean(),
+  // visitingInfo: {
+  //   gymName: "",
+  //   area: "",
+  // },
+  visitingInfo: z.array(
+    z.object({
+        gymName: z.string(),
+        area: z.string(),
+    })
+  ).max(5),
   accountId: z.string(),
 });
 

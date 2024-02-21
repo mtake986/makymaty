@@ -61,6 +61,11 @@ interface Params {
   };
   topics?: string[];
   anotherTrainingParts?: string[];
+  goodWithVisiting: boolean;
+  visitingInfo: {
+    gymName: string;
+    area: string;
+  }[];
   author: string;
   communityId: string | null;
   path: string;
@@ -72,6 +77,8 @@ export async function createThread({
   gymInfo,
   topics,
   anotherTrainingParts,
+  goodWithVisiting,
+  visitingInfo,
   author,
   communityId,
   path,
@@ -90,6 +97,8 @@ export async function createThread({
       gymInfo,
       topics,
       anotherTrainingParts,
+      goodWithVisiting,
+      visitingInfo,
       author,
       community: communityIdObject, // Assign communityId if provided, or leave it null for personal account
     });

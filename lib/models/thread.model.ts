@@ -54,6 +54,13 @@ const threadSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  goodWithVisiting: {type: Boolean, required: true},
+  visitingInfo: [
+    {
+      gymName: String,
+      area: String,
+    },
+  ],
   community: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Community",
