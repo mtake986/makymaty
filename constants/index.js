@@ -42,3 +42,19 @@ export const communityTabs = [
   { value: "members", label: "Members", icon: "/assets/members.svg" },
   { value: "requests", label: "Requests", icon: "/assets/request.svg" },
 ];
+
+export const TRAINING_PARTS = [
+  { value: "abs", label: "Abs" },
+  { value: "arms", label: "Arms" },
+  { value: "biceps", label: "Biceps" },
+  { value: "back", label: "Back" },
+  { value: "chest", label: "Chest" },
+  { value: "glute", label: "Glute" },
+  { value: "ham", label: "Ham" },
+  { value: "legs", label: "Legs" },
+  { value: "quads", label: "Quads" },
+  { value: "shoulders", label: "Shoulders" },
+  { value: "triceps", label: "Triceps" },
+];
+
+export const DEFAULT_VALUE_ANOTHER_TRAINING_PARTS = ["chest"]

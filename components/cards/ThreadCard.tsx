@@ -1,12 +1,13 @@
 import { formatDateString } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { badgeVariants } from "@/components/ui/badge";
 
 type Props = {
   id: string;
   currentUserId: string;
   parentId: string | null;
-  content: string;
+  description: string;
   author: {
     name: string;
     image: string;
@@ -23,6 +24,9 @@ type Props = {
       image: string;
     };
   }[];
+  topics?: string[];
+  trainingParts: string[];
+  anotherTrainingParts?: string[];
   isComment?: boolean;
 };
 
@@ -30,11 +34,14 @@ const ThreadCard = ({
   id,
   currentUserId,
   parentId,
-  content,
+  description,
   author,
   community,
   createdAt,
   comments,
+  topics,
+  trainingParts,
+  anotherTrainingParts,
   isComment,
 }: Props) => {
   return (
@@ -63,7 +70,24 @@ const ThreadCard = ({
               </h4>
             </Link>
 
-            <p className="mt-2 text-small-regular text-light-2">{content}</p>
+            {/* TODO: make UI */}
+            <div className="flex gap-1 items-center mt-3">
+              {trainingParts?.map((topic: string, i: number) => (
+                <Link key={i} href={"/create-thread"}>
+                  <span className="text-light-1 text-xl">{topic}</span>
+                </Link>
+              ))}
+            </div>
+            <p className="mt-2 text-small-regular text-light-2">
+              {description}
+            </p>
+            <div className="flex gap-1 items-center mt-3">
+              {topics?.map((topic: string, i: number) => (
+                <Link key={i} href={"/create-thread"}>
+                  <span className="text-light-1 text-[10px]">#{topic}</span>
+                </Link>
+              ))}
+            </div>
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
               <div className="flex gap-3.5">
@@ -112,16 +136,23 @@ const ThreadCard = ({
 
         {/* Todo: delete thread */}
         {/* Todo: show comment logos */}
-
       </div>
-        {!isComment && community && (
-          <Link href={`/communities/${community.id}`} className="mt-5 flex items-center">
-            <p className="text-subtle-medium text-gray-1">
-              {formatDateString(createdAt)} - {community.name} Community
-            </p>
-            <Image src={community.image} alt={community.name} width={14} height={14} className="ml-1 rounded-full object-cover" />
-          </Link>
-        )}
+      {!isComment && community && (
+        <Link
+          href={`/communities/${community.id}`}
+          className="mt-5 flex items-center">
+          <p className="text-subtle-medium text-gray-1">
+            {formatDateString(createdAt)} - {community.name} Community
+          </p>
+          <Image
+            src={community.image}
+            alt={community.name}
+            width={14}
+            height={14}
+            className="ml-1 rounded-full object-cover"
+          />
+        </Link>
+      )}
     </article>
   );
 };
